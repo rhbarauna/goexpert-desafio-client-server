@@ -1,4 +1,4 @@
-module github.com/rhbarauna/pos-graduacao/client-server-api
+module github.com/rhbarauna/goexpert-desafio-client-server
 
 go 1.21.1
 
