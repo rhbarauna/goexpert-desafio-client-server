@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -35,6 +34,7 @@ func filtraCotacaoHandler(res http.ResponseWriter, req *http.Request) {
 
 	cotacao, err := buscaCotacao(res)
 	if err != nil {
+		log.Println(err.Error())
 		return
 	}
 
@@ -108,14 +108,14 @@ func persistIntoDB(c Cotacao) error {
 	db, err := sql.Open("sqlite3", "db_cotacao.sqlite3")
 
 	if err != nil {
-		fmt.Println("Erro ao preparar o banco")
+		log.Printf("Erro ao connectar no banco %v \n", err)
 		return err
 	}
 	defer db.Close()
 
 	err = prepareDB(db)
 	if err != nil {
-		fmt.Println("Erro ao preparar o banco")
+		log.Printf("Erro ao preparar o banco %v \n", err)
 		return err
 	}
 
@@ -124,7 +124,7 @@ func persistIntoDB(c Cotacao) error {
 
 	stmt, err := db.Prepare("INSERT INTO cocatao (id, code, codein, name, high, low, varBid, pctChange, bid, ask, timestamp, create_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);")
 	if err != nil {
-		fmt.Printf("Erro ao preparar a sql %v \n", err)
+		log.Printf("Erro ao preparar a sql %v \n", err)
 		return err
 	}
 
@@ -145,7 +145,7 @@ func persistIntoDB(c Cotacao) error {
 		c.Usdbrl.CreateDate)
 
 	if err != nil {
-		fmt.Println("Erro ao persistir dados no database")
+		log.Printf("Erro ao persistir dados no database: %v \n", err)
 		return err
 	}
 
